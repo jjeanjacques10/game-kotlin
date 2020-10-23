@@ -1,60 +1,80 @@
 package br.com.fiap.a3siagame
 
 import android.content.Context
+import android.view.MotionEvent
 import android.view.SurfaceView
 
-class GameView(context: Context,
-               val screenX:Int,
-               val screenY:Int): SurfaceView(context), Runnable {
+class GameView(
+    context: Context,
+    val screenX: Int,
+    val screenY: Int
+): SurfaceView(context), Runnable {
 
     private var gameThread: Thread? = null
 
     private var isRunning = false
+    private val FPS = 30L
 
-    private val background = Background(screenX,screenY, resources)
-    private val background2 = Background(screenX,screenY, resources).apply {
-        x = screenX
-    }
+    val gameObject = arrayOf<GameObject>(
+        Background(screenX, screenY, resources) ,
+        Background(screenX, screenY, resources).apply {
+            x = screenX
+        },
+        GreenLantern(screenX, screenY, resources).apply {
+            initGreenLantern()
+        },
+        Enemy(screenX, screenY, resources)
+    )
 
     override fun run() {
-        //The game will run here
-        while (isRunning){
+        while (isRunning) {
+
             update()
             draw()
             sleep()
+
         }
     }
 
-    private fun update(){
-        background.update()
-        background2.update()
+    private fun update() {
+        gameObject.forEach { it.update() }
     }
 
-    private fun draw(){
-        if(holder.surface.isValid){
+    private fun draw() {
+
+        if(holder.surface.isValid) {
+
             val canvas = holder.lockCanvas()
 
-            background.draw(canvas)
-            background2.draw(canvas)
+            gameObject.forEach { it.draw(canvas) }
 
             holder.unlockCanvasAndPost(canvas)
         }
     }
 
-    private fun sleep(){
-        Thread.sleep(1000/60)
+    private fun sleep() {
+        Thread.sleep(1000 / FPS)
     }
 
-    fun resume(){
+    fun resume() {
         isRunning = true
         gameThread = Thread(this)
         gameThread?.start()
     }
 
-    fun pause(){
+    fun pause() {
         isRunning = false
         gameThread?.join()
     }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
 
+        when(event?.action){
+            MotionEvent.ACTION_DOWN ->{
+                (gameObject[2] as? GreenLantern)?.jump()
+            }
+            MotionEvent.ACTION_UP -> { }
+        }
+        return super.onTouchEvent(event)
+    }
 }

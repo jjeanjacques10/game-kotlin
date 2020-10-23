@@ -1,4 +1,4 @@
-# Game Kotlin
+# Game Kotlin - Green Lantern
 
 Android game developed with Kotlin
 

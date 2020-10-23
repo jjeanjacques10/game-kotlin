@@ -2,34 +2,25 @@ package br.com.fiap.a3siagame
 
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
 
 class Background(
     val width: Int,
     val height: Int,
-    val res: Resources
-) {
-    var x = 0
-    var y = 0
+    res: Resources
+) : GameObject(res){
 
-    private  val velocity = 10
+    override var x = 0
+    override var y = 0
 
-    val bitmap: Bitmap = BitmapFactory.decodeResource(res, R.drawable.game_background).let {
-        Bitmap.createScaledBitmap(it, width, height, false)
-    }
+    private val velocity = 10
 
-    fun update(){
+    override val bitmap: Bitmap = loadBitmap(R.drawable.game_background, width, height)
+
+    override fun update() {
         x -= velocity
 
-        if(x + bitmap.width <= 0){
+        if(x + bitmap.width <= 0) {
             x = width
         }
     }
-
-    fun draw(canvas: Canvas){
-        canvas.drawBitmap(bitmap, x.toFloat(), y.toFloat(), null)
-    }
-
-
 }
