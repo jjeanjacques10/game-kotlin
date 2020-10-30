@@ -12,7 +12,7 @@ class GreenLantern(
     override var y: Int =0
 
     fun initGreenLantern(){
-        x = screenX / 2 - (bitmap.width /2)
+        x = screenX / 3 - (bitmap.width /2)
         y = screenY / 2 - (bitmap.height /2)
     }
 
